@@ -1,5 +1,3 @@
-# coding=utf-8
-
 # Bell 202 Audio Frequency Shift Keying
 # http://n1vg.net/packet/
 

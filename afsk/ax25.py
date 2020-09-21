@@ -145,7 +145,6 @@ class AX25(object):
 	def unparse(self):
 		flag = bitarray(endian="little")
 		flag.frombytes(self.flag)
-		print (self.flag, flag)
 		bits = bitarray(endian="little")
 		bits.frombytes(b"".join([self.header(), self.info.encode('utf-8'), self.fcs()]))
 

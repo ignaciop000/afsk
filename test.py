@@ -23,7 +23,7 @@ def test_packet():
 
 	print ("Unstuffed body BA:\n%s" % unstuffed_body)
 
-	print ("checksummed_content_bits:\n%r" % "".join([packet.header(), packet.info]))
+	print ("checksummed_content_bits:\n%r %r" % (packet.header(), packet.info))
 
 	print ("BS PACKET:\n%r" % (bs_packet))
 	print ("Packet:\n%s\n%r\nHeader:\n%r" % (packet, packet.packet(), packet.header()))

@@ -107,17 +107,12 @@ class AX25(object):
 		assert(len(callsign) <= 6)
 
 		callsign = "{callsign:6s}{ssid}".format(callsign=callsign, ssid=ssid)
-
 		# now shift left one bit, argh
-		return b"".join([bytes(char << 1) for char in callsign.encode('utf-8')])
+		return b"".join([bytes([char << 1]) for char in callsign.encode('utf-8')])
 
 	def encoded_addresses(self):
-		address = "{destination}{source}{digis}".format(
-			destination = AX25.callsign_encode(self.destination),
-			source = AX25.callsign_encode(self.source),
-			digis = b"".join([AX25.callsign_encode(digi) for digi in self.digipeaters])
-		)
-		address_bytes = bytearray(address.encode('utf-8'))
+		address = b"".join([AX25.callsign_encode(self.destination),AX25.callsign_encode(self.source), b"".join([AX25.callsign_encode(digi) for digi in self.digipeaters])])
+		address_bytes = bytearray(address)
 
 		# set the low order (first, with eventual little bit endian encoding) bit
 		# in order to flag the end of the address string
@@ -126,28 +121,17 @@ class AX25(object):
 		return address_bytes
 
 	def header(self):
-		header = "{addresses}{control}{protocol}".format(
-			addresses = self.encoded_addresses(),
-			control = self.control_field, # * 8,
-			protocol = self.protocol_id,
-		)
-		return header.encode('utf-8')
+		return b"".join([self.encoded_addresses(), self.control_field, self.protocol_id])		
 
 	def packet(self):
-		packet = "{header}{info}{fcs}".format(
-			flag = self.flag,
-			header = self.header(),
-			info = self.info,
-			fcs = self.fcs()
-		)
-		return packet.encode('utf-8')
+		return b"".join([self.flag,self.header(),self.info.encode('utf-8'),self.fcs()])
 
 	def unparse(self):
 		flag = bitarray(endian="little")
 		flag.frombytes(self.flag)
+
 		bits = bitarray(endian="little")
 		bits.frombytes(b"".join([self.header(), self.info.encode('utf-8'), self.fcs()]))
-
 		return flag + bit_stuff(bits) + flag
 	
 	def __repr__(self):

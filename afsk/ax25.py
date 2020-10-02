@@ -189,7 +189,7 @@ def main(arguments=None):
 	)
 	parser.add_argument(
 		'--destination',
-		default=b'APRS',
+		default='APRS',
 		help='AX.25 destination address. See http://www.aprs.org/aprs11/tocalls.txt'
 	)
 	parser.add_argument(
